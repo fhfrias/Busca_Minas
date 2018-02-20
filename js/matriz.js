@@ -11,6 +11,7 @@
 
 class Matriz {
     
+
     /**
      * Constructor, aloja espacio en memoria para 
      * una matriz de filas * columnas.
@@ -20,14 +21,14 @@ class Matriz {
      * @param {number} columnas número de columnas de la matriz.
      * Si no se pasa valor (undefined) por defecto es 20.
      */
+
     constructor(filas=20, columnas=20){
-        this.filas = filas;
-        this.columnas = columnas;
-        // Una matriz es un array de arrays
-        this.data = []; // asignamos un array vacío a data
-        for (let i=0; i< filas; i++){
-            this.data.push(new Array(columnas)); // en cada iteración añadimos un array 
-        };
+        this._filas = filas;
+        this._columnas = columnas;
+        this._data = [];
+        for (let i=0; i<filas;i++){
+            this._data.push(new Array(columnas).fill(0));
+        }
     }
 
     /**
@@ -35,13 +36,13 @@ class Matriz {
      * Para el Buscaminas debe ser 0. Si no le pasamos nada por defecto 
      * será 0.
      * 
-     * @param {*} valor 
+     * @param {number} valor El dato con el que vamos a rellenar toda la matriz
      */
-    incializa(valor=0){
-        for(let i=0; i<this.filas; i++) {
-            for (let j=0; j<this.columnas; j++) {
-                this.data[i][j] = valor;
-            }
+    incializa(valor){
+        for(var i=0; i<this._data.length; i++) {
+            // for (var j=0; j<this._data[i].length; j++) {
+                this._data[i].fill(0);
+            // }
         }
     }
     
@@ -51,21 +52,19 @@ class Matriz {
      * @param {number} n_minas número de minas a colocar. 
      */
     ponMinas(n_minas){
-        // Definimos las variables con ámbito sólo este método.
-        // let pos_fil;
-        // let pos_col;
-        // Inicializamos la matriz con ceros
-        this.incializa(0);
         // Como mínimo que tengamos que poner una mina
-        if (n_minas >= 1 && (this.columnas*this.filas/3)<=n_minas) {
+        let max_minas = Math.floor( (this._columnas * this._filas) / 3);
+        if ( (n_minas >= 1) && (n_minas < max_minas) ) {
+            this._minas=n_minas;
             do {
-                // Definimos las variables con ámbito sólo este bucle.
-                let pos_fil = this.dado(this.filas);
-                let pos_col = this.dado(this.columnas);
+                // con LET estas variables sólo tienen como ámbito este bloque
+                let pos_fil = this.dado(this._filas);
+                let pos_col = this.dado(this._columnas);
+                // console.log("Matriz::ponMinas: intentando colocar mina en: "+pos_fil+","+pos_col);
                 // compruebo si no había mina previa
-                if (this.data[pos_fil][pos_col]!=-1){
-                    this.data[pos_fil][pos_col]=-1;
-                    --n_minas;
+                if (this._data[pos_fil][pos_col]!=(-1)){
+                    this._data[pos_fil][pos_col]=(-1);
+                    n_minas--;
                 }
             } while (n_minas>0);
         } else {
@@ -80,8 +79,9 @@ class Matriz {
      * @param {number} valor genera un aleatorio entre 0 y valor-1
      */
     dado(valor) {
-        let tmp;
+        var tmp;
         tmp = Math.floor(Math.random()*valor);
+        // console.log("DADO::"+tmp);
         return tmp;
     }
 
@@ -89,28 +89,28 @@ class Matriz {
      * Métodos para hacer las comprobaciones acerca de las minas
      */
     miraNorte(i,j){
-        return this.data[i-1][j]==-1?1:0;
+        return this._data[i-1][j]==-1?1:0;
     }
     miraNO(i,j){
-        return this.data[i-1][j-1]==-1?1:0;
+        return this._data[i-1][j-1]==-1?1:0;
     }
     miraNE(i,j){
-        return this.data[i-1][j+1]==-1?1:0;
+        return this._data[i-1][j+1]==-1?1:0;
     }
     miraEste(i,j){
-        return this.data[i][j+1]==-1?1:0;
+        return this._data[i][j+1]==-1?1:0;
     }
     miraSE(i,j){
-        return this.data[i+1][j+1]==-1?1:0;
+        return this._data[i+1][j+1]==-1?1:0;
     }
     miraSur(i,j){
-        return this.data[i+1][j]==-1?1:0;
+        return this._data[i+1][j]==-1?1:0;
     }
     miraSO(i,j){
-        return this.data[i+1][j-1]==-1?1:0;
+        return this._data[i+1][j-1]==-1?1:0;
     }
     miraOeste(i,j){
-        return this.data[i][j-1]==-1?1:0;
+        return this._data[i][j-1]==-1?1:0;
     }
 
     /**
@@ -118,79 +118,81 @@ class Matriz {
      * que hay alrededor de cada casilla.
      */
     ponContadores(){
-        for (let i=0; i<this.filas;i++){
-            for(let j=0; j<this.columnas; j++){
-                if (this.data[i][j]!=-1) { // sólo si no hay mina hacemos las cuentas...
+        console.log(this._data.length);
+        for (let i=0; i<this._data.length; i++){
+            console.log(this._data[i].length);
+            for(let j=0; j<this._data[i].length; j++){
+                if (this._data[i][j]!=-1) { // sólo si no hay mina hacemos las cuentas...
                     if (i==0) { // estamos en la primera fila
                         if (j==0) { // estamos en la primera columna
                             // miramos sólo a la derecha y abajo
-                            this.data+=this.miraEste(i,j);
-                            this.data+=this.miraSE(i,j);
-                            this.data+=this.miraSur(i,j);
+                            this._data[i][j]+=this.miraEste(i,j);
+                            this._data[i][j]+=this.miraSE(i,j);
+                            this._data[i][j]+=this.miraSur(i,j);
                         } else {
-                            if (j==(this.columnas-1)) { // estamos en la última columna
+                            if (j==(this._columnas-1)) { // estamos en la última columna
                                 // miramos abajo y a izquierda
-                                this.data+=this.miraOeste(i,j);
-                                this.data+=this.miraSO(i,j);
-                                this.data+=this.miraSur(i,j);
+                                this._data[i][j]+=this.miraOeste(i,j);
+                                this._data[i][j]+=this.miraSO(i,j);
+                                this._data[i][j]+=this.miraSur(i,j);
                             } else { // estamos en las columnas centrales
                                 // miramos a derecha, izquierda y abajo
-                                this.data+=this.miraOeste(i,j);
-                                this.data+=this.miraEste(i,j);
-                                this.data+=this.miraSO(i,j);
-                                this.data+=this.miraSE(i,j);
-                                this.data+=this.miraSur(i,j);
+                                this._data[i][j]+=this.miraOeste(i,j);
+                                this._data[i][j]+=this.miraEste(i,j);
+                                this._data[i][j]+=this.miraSO(i,j);
+                                this._data[i][j]+=this.miraSE(i,j);
+                                this._data[i][j]+=this.miraSur(i,j);
                             }
                         }
                     } else {
-                        if (i==(this.filas-1)) { // estamos en la última fila
+                        if (i==(this._filas-1)) { // estamos en la última fila
                             if (j==0) { // estamos en la primera columna
                                 // miramos sólo arriba y derecha
-                                this.data+=this.miraNorte(i,j);
-                                this.data+=this.miraNE(i,j);
-                                this.data+=this.miraEste(i,j);
+                                this._data[i][j]+=this.miraNorte(i,j);
+                                this._data[i][j]+=this.miraNE(i,j);
+                                this._data[i][j]+=this.miraEste(i,j);
                             } else {
-                                if (j==(this.columnas-1)) { // estamos en la última columna
+                                if (j==(this._columnas-1)) { // estamos en la última columna
                                     // miramos a la izquierda y arriba
-                                    this.data+=this.miraNorte(i,j);
-                                    this.data+=this.miraNO(i,j);
-                                    this.data+=this.miraOeste(i,j);
+                                    this._data[i][j]+=this.miraNorte(i,j);
+                                    this._data[i][j]+=this.miraNO(i,j);
+                                    this._data[i][j]+=this.miraOeste(i,j);
                                 } else { // estamos en las columnas centrales
                                     // miramos a derecha, izquierda y arriba
-                                    this.data+=this.miraNorte(i,j);
-                                    this.data+=this.miraNO(i,j);
-                                    this.data+=this.miraOeste(i,j);
-                                    this.data+=this.miraEste(i,j);
-                                    this.data+=this.miraNE(i,j);
+                                    this._data[i][j]+=this.miraNorte(i,j);
+                                    this._data[i][j]+=this.miraNO(i,j);
+                                    this._data[i][j]+=this.miraOeste(i,j);
+                                    this._data[i][j]+=this.miraEste(i,j);
+                                    this._data[i][j]+=this.miraNE(i,j);
                                 }
                             }
                         } else { // estamos en las filas centrales
                             if (j==0) { // estamos en la primera columna
                                 // arriba, abajo y a la derecha
-                                this.data+=this.miraNorte(i,j);
-                                this.data+=this.miraSur(i,j);
-                                this.data+=this.miraSE(i,j);
-                                this.data+=this.miraEste(i,j);
-                                this.data+=this.miraNE(i,j);
+                                this._data[i][j]+=this.miraNorte(i,j);
+                                this._data[i][j]+=this.miraSur(i,j);
+                                this._data[i][j]+=this.miraSE(i,j);
+                                this._data[i][j]+=this.miraEste(i,j);
+                                this._data[i][j]+=this.miraNE(i,j);
                             } else {
-                                if (j==(this.columnas-1)) { // estamos en la última columna
+                                if (j==(this._columnas-1)) { // estamos en la última columna
                                     // arriba, abajo y a la izquierda
-                                    this.data+=this.miraNorte(i,j);
-                                    this.data+=this.miraNO(i,j);
-                                    this.data+=this.miraOeste(i,j);
-                                    this.data+=this.miraSO(i,j);
-                                    this.data+=this.miraSur(i,j);
+                                    this._data[i][j]+=this.miraNorte(i,j);
+                                    this._data[i][j]+=this.miraNO(i,j);
+                                    this._data[i][j]+=this.miraOeste(i,j);
+                                    this._data[i][j]+=this.miraSO(i,j);
+                                    this._data[i][j]+=this.miraSur(i,j);
 
                                 } else { // estamos en las columnas centrales
                                     // arriba, abajo, derecha e izquierda
-                                    this.data+=this.miraNorte(i,j);
-                                    this.data+=this.miraNO(i,j);
-                                    this.data+=this.miraOeste(i,j);
-                                    this.data+=this.miraSO(i,j);
-                                    this.data+=this.miraSur(i,j);
-                                    this.data+=this.miraSE(i,j);
-                                    this.data+=this.miraEste(i,j);
-                                    this.data+=this.miraNE(i,j);
+                                    this._data[i][j]+=this.miraNorte(i,j);
+                                    this._data[i][j]+=this.miraNO(i,j);
+                                    this._data[i][j]+=this.miraOeste(i,j);
+                                    this._data[i][j]+=this.miraSO(i,j);
+                                    this._data[i][j]+=this.miraSur(i,j);
+                                    this._data[i][j]+=this.miraSE(i,j);
+                                    this._data[i][j]+=this.miraEste(i,j);
+                                    this._data[i][j]+=this.miraNE(i,j);
                                 }
                             }
                         }
@@ -207,8 +209,8 @@ class Matriz {
      * @param {number} j Posición de la columna en el tablero.
      */
     get(i,j){
-        if (i>=0 && i<this.filas && j>=0 && j<this.columnas) {
-            return this.data[i][j];
+        if (i>=0 && i<this._filas && j>=0 && j<this._columnas) {
+            return this._data[i][j];
         } else {
             throw new Error("Matriz::get: Ha intentado acceder a una posición no válida.");
         }
@@ -223,11 +225,33 @@ class Matriz {
      * @param {number} dato Si no se indica, por defecto será 0.
      */
     set(i,j,dato=0) {
-        if (i>=0 && i<this.filas && j>=0 && j<this.columnas) {
-            this.data[i][j]=dato;
+        if (i>=0 && i<this._filas && j>=0 && j<this._columnas) {
+            this._data[i][j]=dato;
         } else {
             throw new Error("Matriz::set: Ha intentado acceder a una posición no válida.");
         }
     }
 
+    getFilas(){
+        return this._filas;
+    }
+
+    getColumnas(){
+        return this._columnas;
+    }
+
+    getMinas(){
+        return this._minas;
+    }
+
+    imprimeMatriz(){
+        let texto="";
+        for (let i=0; i<this._data.length; i++){
+            for(let j=0; j<this._data[i].length; j++){
+                texto += "\t"+this._data[i][j];
+            }
+            texto += "\n";
+        }
+        console.log(texto);
+    }
 };

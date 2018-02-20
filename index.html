@@ -7,6 +7,8 @@
     <script src="js/jquery-3.3.1.min.js" type="text/javascript"></script>
     <script src="js/popper.min.js" type="text/javascript"></script> 
     <script src="js/bootstrap.min.js" type="text/javascript" ></script>
+    <script src="js/matriz.js" type="text/javascript" ></script>
+    <script src="js/juego.js" type="text/javascript" ></script>
     <script src="js/index.js" type="text/javascript" ></script>
     <link rel="stylesheet" href="css/bootstrap.min.css" /> 
     <link rel="stylesheet" href="css/estilos.css" />
@@ -16,7 +18,7 @@
     <!-- contenedor de la APP -->
     <div class="container">
         <!-- Menú principal -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <nav class="navbar navbar-expand-lg navbar-light">
                 <a class="navbar-brand" href="#">Buscaminas</a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" 
                         data-target="#contenidoMenu" 
@@ -28,7 +30,7 @@
                 <div class="collapse navbar-collapse" id="contenidoMenu">
                   <ul class="navbar-nav mr-auto">
                     <li class="nav-item active">
-                      <a class="nav-link" href="#">Inicio <span class="sr-only">(current)</span></a>
+                      <a class="nav-link" href="#" id="menu_inicio">Inicio <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item dropdown">
                       <a class="nav-link dropdown-toggle" href="#" 
@@ -38,9 +40,9 @@
                         Nuevo juego
                       </a>
                       <div class="dropdown-menu" aria-labelledby="dropdownJuego">
-                        <a class="dropdown-item" href="#">Fácil</a>
-                        <a class="dropdown-item" href="#">Medio</a>
-                        <a class="dropdown-item" href="#">Difícil</a>
+                        <a class="dropdown-item" href="#" id="menu_facil">Fácil</a>
+                        <a class="dropdown-item" href="#" id="menu_medio">Medio</a>
+                        <a class="dropdown-item" href="#" id="menu_dificil">Difícil</a>
                       </div>
                     </li>     
                     <li class="nav-item dropdown">
@@ -51,9 +53,9 @@
                             Ayuda
                         </a>
                         <div class="dropdown-menu" aria-labelledby="dropdownAyuda">
-                            <a class="dropdown-item" href="#">Manual usuario</a>
-                            <a class="dropdown-item" href="#">Acerca de...</a>
-                            <a class="dropdown-item" href="#">Versión</a>
+                            <a class="dropdown-item" href="#" id="menu_manual">Manual usuario</a>
+                            <a class="dropdown-item" href="#" id="menu_acerca">Acerca de...</a>
+                            <a class="dropdown-item" href="#" id="menu_version">Versión</a>
                         </div>
                     </li>              
                   </ul>
@@ -67,26 +69,26 @@
                 <div class="row">
                     <!-- Minas por encontrar -->
                     <div class="col-xs-4"> 
-                        <div class="reloj digital">
-                            123456 
+                        <div id="minas" class="reloj">
+                            12
                         </div>
                     </div>
                     <!-- Carita feliz/triste -->
                     <div class="col-xs-4"> 
-                        <div id="carita" class="caraFeliz" >
+                        <div id="carita" class="cara caraGanar" >
                         </div> 
                     </div>
                     <!-- Temporizador -->
                     <div class="col-xs-4"> 
-                        <div id="tiempo" class="reloj digital">
+                        <div id="tiempo" class="reloj">
                             0
                         </div>
                     </div>
                 </div>                    
             </div>
             <!-- Tabla con las minas -->
-            <div id="tablero" class="tablero_minas">
-                <table border="2px solid" id="tablero">
+            <div class="tablero_minas"  id="tablero">
+                <table border="2px solid">
                     
                 </table>
             </div>
